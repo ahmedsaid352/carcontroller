@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta charset="utf-8" />
+        <title>measure project</title>
+        <style>
+            #lfb{
+            margin-top: 32px;
+            width: 45%;
+            line-height: 50px;
+            font-family: inherit;
+            background: #00ad5f;
+            -webkit-border-radius: 10px;
+            -moz-border-radius: 10px;
+            border-radius: 10px;
+            text-transform: capitalize;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 700;
+            -webkit-transition: all 0.4s ease;
+            -o-transition: all 0.4s ease;
+            -moz-transition: all 0.4s ease;
+            transition: all 0.4s ease;
+            }
+            #mb{
+            margin-top: 32px;
+            width: 45%;
+            line-height: 50px;
+            font-family: inherit;
+            background: #ac020b;
+            -webkit-border-radius: 10px;
+            -moz-border-radius: 10px;
+            border-radius: 10px;
+            text-transform: capitalize;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 700;
+            -webkit-transition: all 0.4s ease;
+            -o-transition: all 0.4s ease;
+            -moz-transition: all 0.4s ease;
+            transition: all 0.4s ease;
+            }
+            .container{
+                width: 98%;
+                margin: 0 auto;
+                text-align: center;
+            }
+            #controlbox{
+                margin: 100px auto;
+                text-align: center;
+            }
+            .arr{
+                display: inline;
+            }
+            .arrow {
+                border: solid black;
+                border-width: 0 3px 3px 0;
+                display: inline-block;
+                padding: 3px;
+                }
+                .right {
+                transform: rotate(-45deg);
+                -webkit-transform: rotate(-45deg);
+                }
+                .left {
+                transform: rotate(135deg);
+                -webkit-transform: rotate(135deg);
+                }
+                .up {
+                transform: rotate(-135deg);
+                -webkit-transform: rotate(-135deg);
+                }
+                .down {
+                transform: rotate(45deg);
+                -webkit-transform: rotate(45deg);
+                }
+                #controls{
+                    margin-top: 100px;
+                    display: none;
+                }
+                #speed{
+                /* -webkit-appearance:media-play-button ; */
+                -webkit-appearance: none;
+                width: 80%;
+                height: 7px;
+                border-radius: 3px;
+                background: #d3d3d3;
+                outline: none;
+                margin-top: 40px;
+            }
+                #speed::-webkit-slider-thumb {
+                    -webkit-appearance: none;
+                    position: relative;
+                    width: 24px;
+                    height: 24px;
+                    border-radius: 50%;
+                    background-color: #abf31a;
+                    cursor: pointer;
+                    z-index: 3;
+                }
+                label{
+                    font-size: 30px;
+                    font-family: tahoma;
+                    color: #d3d3d3;
+                }
+                .arr button{
+                    width: 40px;
+                    height: 40px;
+                    margin: 5px;
+                }
+                body{
+                    margin: 0;
+                    padding: 0;
+                    background-color: #333;
+                }
+                .arr:nth-of-type(2){
+                    margin-right:20px ;
+                }
+                .arr:nth-of-type(3){
+                    margin-left: 20px;
+                }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div>
+                <button id="lfb">Line Follower</button>
+                <button id="mb">Manual</button>
+            </div>
+            <div id="controlbox">
+                <label for="speed">Car Speed</label><br><input id="speed"  type="range" min="0" max="255" step="15">
+                <div id="controls">
+                    <div class="arr"><button id="u"><i class="arrow up"></i></button></div><br>
+                    <div class="arr"><button id="l"><i class="arrow left"></i></button></div>
+                    <div class="arr"><button id="r"><i class="arrow right"></i></button></div><br>
+                    <div class="arr"><button id="d"><i class="arrow down"></i></button></div>
+                </div>
+            </div>
+        </div>
+        <script>
+            var HOST = location.origin.replace(/^http/, 'ws');
+            var ws = new WebSocket(HOST); 
+            let lfb = document.getElementById("lfb");
+            let mb = document.getElementById("mb");
+            let speed = document.getElementById("speed");
+            let upb = document.getElementById("u");
+            let downb = document.getElementById("d");
+            let leftb = document.getElementById("l");
+            let  rightb = document.getElementById("r");
+            var first;
+            var speedValue;
+            var msg;
+            //when user press on linefollower or manual button
+            lfb.onclick=function(){
+                document.getElementById("controls").style.display="none";
+                this.style.backgroundColor="#00ad5f";
+                mb.style.backgroundColor="#ac020b";
+                first=1;
+            }
+            mb.onclick=function(){
+                document.getElementById("controls").style.display="block";
+                this.style.backgroundColor="#00ad5f";
+                lfb.style.backgroundColor="#ac020b";
+                first=0;
+                
+            }
+            const zeroPad = (num, places) => String(num).padStart(places, '0')
+            // speed change
+            speed.onchange=function(){
+                speedValue = this.value;
+                speedValue=zeroPad(speedValue,3);
+                if(first==1){
+                    msg= first + speedValue +"7" ;
+                    myjson = JSON.stringify(msg);
+                    ws.send(myjson);
+                }
+            }
+            
+            upb.onmousedown=function(){
+                msg= first + speedValue +"1" ;
+                myjson = JSON.stringify(msg);
+                ws.send(myjson);
+            }
+            rightb.onmousedown=function(){
+                msg= first + speedValue +"0" ;
+                myjson = JSON.stringify(msg);
+                ws.send(myjson);
+            }
+            downb.onmousedown=function(){
+                msg= first + speedValue +"3" ;
+                myjson = JSON.stringify(msg);
+                ws.send(myjson);
+            }
+            leftb.onmousedown=function(){
+                msg= first + speedValue +"2" ;
+                myjson = JSON.stringify(msg);
+                ws.send(myjson);
+            }
+            ws.onmessage = function(event){
+                console.log(event.data);
+                // var msg = event.data;
+                
+            }
+            ws.onopen = function(){
+                console.log("Connected to server");
+            }
+            ws.onclose = function(){
+                console.log("Disconnected from server!");
+            }
+            /*if (ws && ws.readyState === 1) {
+                ws.send("red");
+            } else {
+                console.log("server is down");
+            }*/
+        </script>
+    </body> 
+</html>
