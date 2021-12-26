@@ -151,6 +151,7 @@
             var first;
             var speedValue;
             var msg;
+            
             //when user press on linefollower or manual button
             lfb.onclick=function(){
                 document.getElementById("controls").style.display="none";
@@ -228,8 +229,6 @@
             
             ws.onmessage = function(event){
                 console.log(event.data);
-                // var msg = event.data;
-                
             }
             
             ws.onopen = function(){
@@ -239,12 +238,6 @@
             ws.onclose = function(){
                 console.log("Disconnected from server!");
             }
-            
-            /*if (ws && ws.readyState === 1) {
-                ws.send("red");
-            } else {
-                console.log("server is down");
-            }*/
         </script>
     </body> 
 </html>
