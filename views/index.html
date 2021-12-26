@@ -118,36 +118,8 @@
                     margin-right:20px ;
                 }
                 .arr:nth-of-type(3){
-                    margin-left: 41px;
+                    margin-left: 40px;
                 }
-                #robotmgs{
-                    display: none;
-                    text-align: center;
-                    background-color: #333;
-                    width: 200px;
-                    margin: 20px auto;
-                    margin-top: 40px;
-                }
-                div p{
-                    color: aliceblue;
-                    font-size: 25px;
-                }#clearbtn{
-                    line-height: 33px;
-                    font-family: inherit;
-                    background: #ac020b;
-                    -webkit-border-radius: 10px;
-                    -moz-border-radius: 10px;
-                    border-radius: 10px;
-                    text-transform: capitalize;
-                    color: #fff;
-                    font-size: 16px;
-                    font-weight: 700;
-                    -webkit-transition: all 0.4s ease;
-                    -o-transition: all 0.4s ease;
-                    -moz-transition: all 0.4s ease;
-                    transition: all 0.4s ease;
-                }
-
         </style>
     </head>
     <body>
@@ -164,12 +136,6 @@
                     <div class="arr"><button id="r"><i class="arrow right"></i></button></div><br>
                     <div class="arr"><button id="d"><i class="arrow down"></i></button></div>
                 </div>
-                <div id="robotmgs">
-                    <p>Message From Car Robot:<br>  I riched the end of this line ! </p>
-                    <button id="clearbtn">Hide Message</button>
-                    
-                </div>
-                <!-- <button id="test">send</button> -->
             </div>
         </div>
         <script>
@@ -185,15 +151,6 @@
             var first;
             var speedValue;
             var msg;
-            document.getElementById("clearbtn").onclick=function(){
-                document.getElementById("robotmgs").style.display="none";
-            }
-            // test when nodeMCU send 3 to server
-
-            // document.getElementById("test").onclick=function(){
-            //     ws.send("3");
-            // }
-
             //when user press on linefollower or manual button
             lfb.onclick=function(){
                 document.getElementById("controls").style.display="none";
@@ -201,6 +158,7 @@
                 mb.style.backgroundColor="#ac020b";
                 first=1;
             }
+
             mb.onclick=function(){
                 document.getElementById("controls").style.display="block";
                 this.style.backgroundColor="#00ad5f";
@@ -219,42 +177,69 @@
                     ws.send(myjson);
                 }
             }
-            // diections
+            
             upb.onmousedown=function(){
                 msg= first + speedValue +"1" ;
                 myjson = JSON.stringify(msg);
                 ws.send(myjson);
             }
+
+            upb.onmouseup=function(){
+                msg= first + speedValue +"7" ;
+                myjson = JSON.stringify(msg);
+                ws.send(myjson);
+            }
+
             rightb.onmousedown=function(){
                 msg= first + speedValue +"0" ;
                 myjson = JSON.stringify(msg);
                 ws.send(myjson);
             }
+
+            rightb.onmouseup=function(){
+                msg= first + speedValue +"7" ;
+                myjson = JSON.stringify(msg);
+                ws.send(myjson);
+            }
+            
             downb.onmousedown=function(){
                 msg= first + speedValue +"3" ;
                 myjson = JSON.stringify(msg);
                 ws.send(myjson);
             }
+            
+            downb.onmouseup=function(){
+                msg= first + speedValue +"7" ;
+                myjson = JSON.stringify(msg);
+                ws.send(myjson);
+            }
+            
             leftb.onmousedown=function(){
                 msg= first + speedValue +"2" ;
                 myjson = JSON.stringify(msg);
                 ws.send(myjson);
             }
-            // on server send message
+            
+            leftb.onmouseup=function(){
+                msg= first + speedValue +"7" ;
+                myjson = JSON.stringify(msg);
+                ws.send(myjson);
+            }
+            
             ws.onmessage = function(event){
                 console.log(event.data);
-                var msg = event.data;
-                if(msg=="3"){
-                    document.getElementById("robotmgs").style.display="block";
-                }
+                // var msg = event.data;
                 
             }
+            
             ws.onopen = function(){
                 console.log("Connected to server");
             }
+            
             ws.onclose = function(){
                 console.log("Disconnected from server!");
             }
+            
             /*if (ws && ws.readyState === 1) {
                 ws.send("red");
             } else {
